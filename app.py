@@ -296,243 +296,149 @@ def compare_ayah(user_input: str, correct_text: str) -> dict:
     }
 
 
-st.set_page_config(page_title="AI মাদ্রাসা", page_icon="🕌", layout="wide", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="AI মাদ্রাসা", page_icon="🕌", layout="wide", initial_sidebar_state="expanded")
 
 st.markdown(
     """
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@400;500;700;800&family=Manrope:wght@500;700&display=swap');
+
     :root {
-        --ink: #1e2433;
-        --muted: #5b6378;
-        --brand-primary: #005f73;
-        --brand-secondary: #0a9396;
-        --brand-accent: #ee9b00;
-        --paper: rgba(255, 255, 255, 0.9);
-        --line: rgba(30, 36, 51, 0.14);
-        --shadow: 0 10px 30px rgba(24, 35, 52, 0.14);
+        --bg-main: #f5f7fb;
+        --bg-panel: #ffffff;
+        --bg-sidebar: #111826;
+        --txt-main: #1f2937;
+        --txt-muted: #64748b;
+        --line: #dbe2ea;
+        --brand: #0f766e;
     }
 
-    @import url('https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@400;500;700;800&family=Sora:wght@500;700&display=swap');
-
     html, body, [data-testid="stAppViewContainer"], .stApp {
-        height: 100vh;
-        overflow: hidden;
+        height: 100%;
     }
 
     .stApp {
         font-family: 'Anek Bangla', sans-serif;
-        color: var(--ink);
-        background:
-            radial-gradient(circle at 15% 10%, rgba(0, 95, 115, 0.16), transparent 38%),
-            radial-gradient(circle at 90% 12%, rgba(238, 155, 0, 0.2), transparent 36%),
-            linear-gradient(150deg, #f4fbfc 0%, #fff8ec 52%, #eef3ff 100%);
+        background: linear-gradient(135deg, #f6f8fb 0%, #eef3fb 100%);
+        color: var(--txt-main);
     }
 
     .block-container {
-        max-width: 1240px;
-        height: 100vh;
-        padding-top: 0.6rem;
-        padding-bottom: 0.55rem;
-        display: flex;
-        flex-direction: column;
-        gap: 0.45rem;
+        max-width: 1280px;
+        padding-top: 0.9rem;
+        padding-bottom: 1.2rem;
     }
 
-    .main-header {
-        background: linear-gradient(118deg, #084b60 0%, #0a9396 56%, #ee9b00 100%);
-        color: #ffffff;
-        padding: 1.05rem 1.1rem;
-        border-radius: 22px 22px 22px 8px;
-        text-align: left;
-        margin-bottom: 0.4rem;
-        box-shadow: 0 16px 34px rgba(8, 75, 96, 0.25);
-        position: relative;
-        overflow: hidden;
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #0f172a 0%, #111826 100%);
+        border-right: 1px solid rgba(148, 163, 184, 0.25);
     }
 
-    .main-header::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.18), transparent 36%);
-        opacity: 0.9;
+    [data-testid="stSidebar"] * {
+        color: #e5edf7;
     }
 
-    .main-header h1 {
-        font-family: 'Sora', sans-serif;
-        font-size: 1.95rem;
-        font-weight: 800;
-        margin-bottom: 0.08rem;
-        letter-spacing: 0.2px;
-        position: relative;
+    [data-testid="stSidebar"] .stRadio label,
+    [data-testid="stSidebar"] .stCheckbox label {
+        color: #d7e0ec !important;
     }
 
-    .main-header p {
-        font-size: 0.9rem;
-        opacity: 0.94;
-        position: relative;
-        max-width: 840px;
+    [data-testid="stSidebar"] .stRadio > div {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        border: 1px solid rgba(148, 163, 184, 0.25);
+        padding: 0.3rem;
     }
 
-    .hero-metrics {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.45rem;
-        margin-top: 0.55rem;
-        position: relative;
-        z-index: 2;
-    }
-
-    .metric-pill {
-        background: rgba(255, 255, 255, 0.2);
-        border: 1px solid rgba(255, 255, 255, 0.38);
-        border-radius: 999px;
-        padding: 0.2rem 0.65rem;
-        font-size: 0.78rem;
-        letter-spacing: 0.2px;
-    }
-
-    .top-grid {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 0.65rem;
-        margin: 0.15rem 0 0.45rem;
-    }
-
-    .mode-card {
-        border: 1px solid var(--line);
-        border-radius: 14px;
-        background: rgba(255, 255, 255, 0.84);
-        padding: 0.72rem 0.8rem;
-        box-shadow: var(--shadow);
-    }
-
-    .mode-card h4 {
-        margin: 0;
-        color: #13344e;
-        font-size: 0.92rem;
-        font-family: 'Sora', sans-serif;
-    }
-
-    .mode-card p {
-        margin: 0.18rem 0 0;
-        color: var(--muted);
-        font-size: 0.8rem;
-        line-height: 1.35;
-    }
-
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 8px;
-        justify-content: center;
-        border-bottom: 1px dashed var(--line);
-        padding: 0.15rem 0.1rem 0.45rem;
-        flex-wrap: wrap;
-    }
-
-    .stTabs [data-baseweb="tab"] {
-        background: rgba(255, 255, 255, 0.84);
-        border-radius: 10px;
-        padding: 8px 15px;
-        font-size: 0.92rem;
-        font-weight: 700;
-        border: 1px solid var(--line);
-        transition: all 0.2s ease;
-        color: #12324a;
-    }
-
-    .stTabs [data-baseweb="tab"]:hover {
-        background: rgba(10, 147, 150, 0.14);
-        transform: translateY(-2px);
-        box-shadow: 0 8px 14px rgba(24, 35, 52, 0.14);
-    }
-
-    .stTabs [aria-selected="true"] {
-        background: linear-gradient(120deg, #005f73, #0a9396) !important;
+    [data-testid="stSidebar"] .stButton > button {
+        background: #0f766e !important;
         color: white !important;
-        border-color: transparent !important;
-        box-shadow: 0 10px 20px rgba(0, 95, 115, 0.28);
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        border-radius: 10px;
+        font-weight: 700;
     }
 
-    [data-baseweb="tab-panel"] {
-        height: calc(100vh - 190px);
-        overflow-y: auto;
-        padding: 0.2rem 0.2rem 1rem;
-        scrollbar-width: thin;
+    .app-shell {
+        background: var(--bg-panel);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        box-shadow: 0 16px 36px rgba(15, 23, 42, 0.08);
+        padding: 1rem 1.15rem;
     }
 
-    .section-title {
-        text-align: center;
-        margin: 0.1rem 0 0.2rem;
-        color: #173d57;
-        font-family: 'Sora', sans-serif;
-        font-size: 1.15rem;
+    .panel-header {
+        background: linear-gradient(90deg, #0f766e 0%, #0ea5a5 100%);
+        color: white;
+        border-radius: 14px;
+        padding: 0.9rem 1rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .panel-header h2 {
+        margin: 0;
+        font-size: 1.2rem;
+        font-family: 'Manrope', sans-serif;
         letter-spacing: 0.2px;
     }
 
-    .response-box,
+    .panel-header p {
+        margin: 0.15rem 0 0;
+        font-size: 0.86rem;
+        opacity: 0.95;
+    }
+
+    .info-box,
+    .story-box,
     .correct-box,
     .wrong-box,
-    .story-box,
-    .info-box,
     .arabic-text {
         border: 1px solid var(--line);
-        backdrop-filter: blur(5px);
-        background: var(--paper);
-        box-shadow: var(--shadow);
-    }
-
-    .response-box {
-        border-left: 5px solid var(--brand-primary);
+        background: #ffffff;
         border-radius: 12px;
-        padding: 1rem;
-        margin-top: 0.6rem;
-        font-size: 0.98rem;
-        line-height: 1.6;
-        color: #24384e;
+        box-shadow: 0 8px 22px rgba(15, 23, 42, 0.06);
     }
 
-    .correct-box {
-        border-left: 5px solid #2a9d8f;
-        border-radius: 12px;
-        padding: 1rem;
-        margin-top: 0.6rem;
-        text-align: center;
-    }
-
-    .wrong-box {
-        border-left: 5px solid #ca6702;
-        border-radius: 12px;
-        padding: 1rem;
-        margin-top: 0.6rem;
-    }
-
-    .story-box {
-        border-radius: 14px;
-        padding: 1.1rem;
-        margin-top: 0.6rem;
-        font-size: 1rem;
-        line-height: 1.75;
-        color: #2d3344;
-        box-shadow: 0 14px 22px rgba(24, 35, 52, 0.12);
-        white-space: pre-wrap;
+    .info-box {
+        border-left: 4px solid #0f766e;
+        padding: 0.8rem;
+        margin: 0.5rem 0 0.8rem;
+        color: #334155;
     }
 
     .arabic-text {
         font-size: 1.45rem;
         text-align: right;
         direction: rtl;
-        color: #15244a;
+        color: #0f172a;
         padding: 1rem;
-        border-radius: 12px;
-        margin: 0.5rem 0;
         line-height: 2;
         font-family: 'Traditional Arabic', 'Scheherazade New', serif;
     }
 
+    .correct-box {
+        border-left: 4px solid #16a34a;
+        padding: 0.9rem;
+        margin-top: 0.6rem;
+        text-align: center;
+    }
+
+    .wrong-box {
+        border-left: 4px solid #dc2626;
+        padding: 0.9rem;
+        margin-top: 0.6rem;
+    }
+
+    .story-box {
+        padding: 1rem;
+        margin-top: 0.6rem;
+        line-height: 1.72;
+        white-space: pre-wrap;
+    }
+
     .word-correct {
-        color: #1f8a57;
+        color: #166534;
         font-weight: 700;
-        background: #e4f8eb;
+        background: #dcfce7;
         padding: 2px 6px;
         border-radius: 6px;
         display: inline-block;
@@ -540,9 +446,9 @@ st.markdown(
     }
 
     .word-wrong {
-        color: #b42334;
+        color: #991b1b;
         font-weight: 700;
-        background: #ffe8ea;
+        background: #fee2e2;
         padding: 2px 6px;
         border-radius: 6px;
         text-decoration: line-through;
@@ -551,9 +457,9 @@ st.markdown(
     }
 
     .word-missing {
-        color: #a45d08;
+        color: #9a3412;
         font-weight: 700;
-        background: #fff2de;
+        background: #ffedd5;
         padding: 2px 6px;
         border-radius: 6px;
         display: inline-block;
@@ -561,115 +467,38 @@ st.markdown(
         font-style: italic;
     }
 
-    .info-box {
-        border-left: 5px solid #0a9396;
-        border-radius: 12px;
-        padding: 0.9rem;
-        margin: 0.5rem 0;
-        font-size: 0.9rem;
-        color: #254a67;
+    .stTextArea textarea,
+    .stTextInput input,
+    .stSelectbox > div > div {
+        border-radius: 10px !important;
+        border: 1px solid var(--line) !important;
     }
 
-    .section-emoji {
-        font-size: 1.35rem;
-        text-align: center;
-        margin-bottom: 0.05rem;
-        color: #335a73;
+    .stButton > button {
+        border-radius: 10px;
+        font-weight: 700;
     }
 
-    .stAudio audio {
-        width: 100%;
-        min-height: 40px;
-        border-radius: 11px;
-        border: 1px solid rgba(0, 95, 115, 0.25);
+    .stChatMessage {
+        border-radius: 14px;
     }
 
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
 
-    .stButton > button {
-        border-radius: 11px;
-        font-weight: 700;
-        letter-spacing: 0.2px;
-        padding: 0.5rem 1.2rem;
-        min-height: 42px;
-        font-size: 0.95rem;
-        transition: all 0.22s ease;
-        border: 1px solid rgba(0, 95, 115, 0.24);
-        background: linear-gradient(120deg, #005f73, #0a9396) !important;
-        color: #fff !important;
-        box-shadow: 0 8px 16px rgba(0, 95, 115, 0.26);
-    }
-
-    .stButton > button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 12px 22px rgba(0, 95, 115, 0.28);
-    }
-
-    .stSelectbox > div > div,
-    .stTextInput > div > div > input,
-    .stTextArea > div > div > textarea,
-    .stRadio > div {
-        background: rgba(255, 255, 255, 0.92);
-        border-radius: 12px;
-        border: 1px solid var(--line);
-        color: var(--ink);
-    }
-
-    .stTextArea > div > div > textarea {
-        font-family: 'Anek Bangla', sans-serif;
-        font-size: 1rem;
-    }
-
-    .stTextArea textarea:focus,
-    .stTextInput input:focus {
-        border-color: #0a9396 !important;
-        box-shadow: 0 0 0 0.15rem rgba(10, 147, 150, 0.16);
-    }
-
-    @media (max-width: 992px) {
-        .main-header h1 { font-size: 1.52rem; }
-        .main-header p { font-size: 0.8rem; }
-        .stTabs [data-baseweb="tab"] { padding: 7px 12px; font-size: 0.88rem; }
-        [data-baseweb="tab-panel"] { height: calc(100vh - 175px); }
-    }
-
     @media (max-width: 768px) {
-        .block-container { padding-left: 0.7rem; padding-right: 0.7rem; }
-        .main-header { padding: 0.7rem 0.62rem; border-radius: 12px; margin-bottom: 0.5rem; }
-        .main-header h1 { font-size: 1.22rem; margin-bottom: 0.2rem; }
-        .hero-metrics { gap: 0.3rem; }
-        .metric-pill { font-size: 0.72rem; }
-        .top-grid { grid-template-columns: 1fr; gap: 0.4rem; }
-        .mode-card h4 { font-size: 0.88rem; }
-        .mode-card p { font-size: 0.78rem; }
-        .stTabs [data-baseweb="tab-list"] {
-            justify-content: flex-start;
-            overflow-x: auto;
-            scrollbar-width: thin;
-            padding: 0 0.2rem 0.4rem;
+        .block-container {
+            padding-left: 0.6rem;
+            padding-right: 0.6rem;
         }
-        .stTabs [data-baseweb="tab"] {
-            border-radius: 10px;
-            padding: 7px 10px;
-            min-height: 40px;
-            white-space: nowrap;
-            font-size: 0.83rem;
-        }
-        [data-baseweb="tab-panel"] { height: calc(100vh - 165px); }
-        .response-box, .correct-box, .wrong-box, .story-box, .info-box, .arabic-text {
-            padding: 0.9rem;
-            border-radius: 10px;
-        }
-        .arabic-text { font-size: 1.25rem; line-height: 1.6; }
-        .stButton > button { width: 100%; }
-    }
 
-    @media (max-width: 420px) {
-        .main-header h1 { font-size: 1.08rem; }
-        .main-header p { font-size: 0.72rem; }
-        .stTabs [data-baseweb="tab"] { font-size: 0.73rem; padding: 6px 9px; }
-        [data-baseweb="tab-panel"] { height: calc(100vh - 154px); }
+        .panel-header h2 {
+            font-size: 1.02rem;
+        }
+
+        .panel-header p {
+            font-size: 0.77rem;
+        }
     }
 </style>
 """,
@@ -677,176 +506,250 @@ st.markdown(
 )
 
 
-def render_top_overview():
+def init_session_state():
+    if "mode" not in st.session_state:
+        st.session_state.mode = "AI শিক্ষক"
+    if "auto_tts" not in st.session_state:
+        st.session_state.auto_tts = True
+    if "teacher_messages" not in st.session_state:
+        st.session_state.teacher_messages = [
+            {
+                "role": "assistant",
+                "content": "আসসালামু আলাইকুম। আমি উস্তাদ AI। তুমি ইসলামিক যেকোনো সহজ প্রশ্ন করতে পারো।",
+            }
+        ]
+    if "teacher_last_answer" not in st.session_state:
+        st.session_state.teacher_last_answer = ""
+
+
+def render_sidebar() -> str:
+    with st.sidebar:
+        st.markdown("### AI মাদ্রাসা")
+        st.caption("ChatGPT-style সাইড প্যানেল")
+
+        mode = st.radio(
+            "মোড বাছাই",
+            ["AI শিক্ষক", "কুরআন অনুশীলন", "ইসলামিক গল্প"],
+            key="mode",
+            label_visibility="visible",
+        )
+
+        st.checkbox("অটো ভয়েস (TTS)", key="auto_tts")
+
+        if st.button("নতুন চ্যাট", use_container_width=True):
+            st.session_state.teacher_messages = [
+                {
+                    "role": "assistant",
+                    "content": "নতুন চ্যাট শুরু হলো। তোমার প্রশ্ন লিখো বা ভয়েসে বলো।",
+                }
+            ]
+            st.session_state.teacher_last_answer = ""
+
+        st.divider()
+        # if check_groq_ready():
+        #     st.success("Groq API সংযুক্ত")
+        # else:
+        #     st.error("Groq API key সেট নেই")
+        # st.caption(f"Model: {GROQ_MODEL}")
+
+    return mode
+
+
+def run_teacher_turn(question: str):
+    st.session_state.teacher_messages.append({"role": "user", "content": question})
+    with st.spinner("উস্তাদ AI ভাবছে..."):
+        prompt = f"একজন ছোট বাচ্চা জিজ্ঞাসা করছে: {question}"
+        response = get_ai_response(prompt, TEACHER_SYSTEM)
+    st.session_state.teacher_messages.append({"role": "assistant", "content": response})
+    st.session_state.teacher_last_answer = response
+
+
+def render_panel_header(title: str, subtitle: str):
     st.markdown(
-        """
-<div class="main-header">
-    <h1>AI মাদ্রাসা স্টুডিও</h1>
-    <p>এক স্ক্রিনে স্মার্ট ইসলামিক শেখা: প্রশ্ন করো, কুরআন অনুশীলন করো, আর পরিষ্কার গল্প তৈরি করো।</p>
-    <div class="hero-metrics">
-        <span class="metric-pill">Groq AI চালিত</span>
-        <span class="metric-pill">STT + TTS ইন্টিগ্রেটেড</span>
-        <span class="metric-pill">মোবাইল রেসপনসিভ</span>
-    </div>
-</div>
-<div class="top-grid">
-    <div class="mode-card">
-        <h4>AI শিক্ষক</h4>
-        <p>টেক্সট বা ভয়েসে প্রশ্ন করো, ছোট ও স্পষ্ট উত্তরে বুঝে নাও।</p>
-    </div>
-    <div class="mode-card">
-        <h4>কুরআন অনুশীলন</h4>
-        <p>উচ্চারণ মিলিয়ে দেখো, ভুল শব্দ চিহ্নিত করো, সাথে সাথে ফিডব্যাক শোনো।</p>
-    </div>
-    <div class="mode-card">
-        <h4>ইসলামিক গল্প</h4>
-        <p>বিষয় দাও, plain-text গল্প নাও, আর ভয়েসে শুনে শেখা সম্পূর্ণ করো।</p>
-    </div>
+        f"""
+<div class="panel-header">
+    <h2>{html.escape(title)}</h2>
+    <p>{html.escape(subtitle)}</p>
 </div>
 """,
         unsafe_allow_html=True,
     )
 
 
-def render_teacher_tab():
-    st.markdown('<div class="section-emoji">শিক্ষক</div>', unsafe_allow_html=True)
-    st.markdown('<div class="section-title">AI শিক্ষক</div>', unsafe_allow_html=True)
-    st.markdown('<div class="info-box">লিখে বা মাইকে বলে প্রশ্ন করতে পারো। AI শিক্ষক সহজ বাংলায় ছোট উত্তর দেবে।</div>', unsafe_allow_html=True)
+def render_teacher_panel():
+    render_panel_header("AI শিক্ষক চ্যাট", "ChatGPT-style কথোপকথন: লিখে বা ভয়েসে প্রশ্ন করো")
 
-    user_question = st.text_area("তোমার প্রশ্ন লেখো:", placeholder="উদাহরণ: নামাজ কেন পড়তে হয়?", height=90, key="teacher_input")
-    voice_question = get_audio_input("অথবা মাইকে প্রশ্ন বলো:", key="teacher_voice")
-    ask_button = st.button("জিজ্ঞাসা করো", type="primary", use_container_width=True)
+    voice_question = get_audio_input("মাইকে প্রশ্ন বলো (optional)", key="teacher_voice_chat")
+    if voice_question is not None:
+        with st.spinner("ভয়েস থেকে লেখা হচ্ছে..."):
+            voice_text = transcribe_audio(voice_question, "ছোট বাচ্চার ইসলামিক প্রশ্ন")
+        if voice_text:
+            st.success(f"তুমি বলেছো: {voice_text}")
+            run_teacher_turn(voice_text)
+            st.rerun()
 
-    if not ask_button:
-        return
+    for msg in st.session_state.teacher_messages:
+        with st.chat_message("assistant" if msg["role"] == "assistant" else "user"):
+            st.write(msg["content"])
 
-    question_to_ask = user_question.strip()
-    if not question_to_ask and voice_question:
-        with st.spinner("তোমার কথা লেখা হচ্ছে..."):
-            question_to_ask = transcribe_audio(voice_question, "ছোট বাচ্চার ইসলামিক প্রশ্ন")
-        if question_to_ask:
-            st.success(f"তুমি বলেছো: {question_to_ask}")
+    user_text = st.chat_input("তোমার প্রশ্ন লিখো...")
+    if user_text:
+        run_teacher_turn(user_text.strip())
+        st.rerun()
 
-    if not question_to_ask:
-        st.info("প্রথমে প্রশ্ন লিখো বা মাইকে রেকর্ড করো।")
-        return
-
-    with st.spinner("উস্তাদ AI ভাবছে..."):
-        prompt = f"একজন ছোট বাচ্চা জিজ্ঞাসা করছে: {question_to_ask}"
-        response = get_ai_response(prompt, TEACHER_SYSTEM)
-
-    st.markdown(f'<div class="response-box"><strong>উস্তাদ AI বলছে:</strong><br><br>{html.escape(response)}</div>', unsafe_allow_html=True)
-    render_tts_player(response, lang="bn", caption="উত্তর শুনতে প্লে করো")
+    if st.session_state.auto_tts and st.session_state.teacher_last_answer:
+        render_tts_player(st.session_state.teacher_last_answer, lang="bn", caption="শেষ উত্তরটি শুনতে পারো")
 
 
-def render_quran_tab():
-    st.markdown('<div class="section-emoji">কুরআন</div>', unsafe_allow_html=True)
-    st.markdown('<div class="section-title">কুরআন অনুশীলন</div>', unsafe_allow_html=True)
-    st.markdown('<div class="info-box">একটি আয়াত বেছে নাও, বাংলা উচ্চারণ লিখে বা বলে যাচাই করো।</div>', unsafe_allow_html=True)
+def render_quran_panel():
+    render_panel_header("কুরআন অনুশীলন", "আয়াত বাছাই করে বাংলা উচ্চারণ মিলিয়ে দেখো")
+    left_col, right_col = st.columns(2)
+    result_state = {"status": "idle"}
 
-    selected_ayah = st.selectbox("আয়াত বাছাই করো:", options=list(QURAN_AYAHS.keys()), key="quran_select")
-    ayah_data = QURAN_AYAHS[selected_ayah]
+    with left_col:
+        st.markdown('<div class="info-box">লিখে বা মাইকে বলে তিলাওয়াত যাচাই করো।</div>', unsafe_allow_html=True)
 
-    st.markdown(f'<div class="arabic-text">{ayah_data["arabic"]}</div>', unsafe_allow_html=True)
-    c1, c2 = st.columns(2)
-    with c1:
-        st.markdown(f"**বাংলা উচ্চারণ:** {ayah_data['bangla']}")
-    with c2:
-        st.markdown(f"**অর্থ:** {ayah_data['meaning']}")
+        selected_ayah = st.selectbox("আয়াত বাছাই করো:", options=list(QURAN_AYAHS.keys()), key="quran_select")
+        ayah_data = QURAN_AYAHS[selected_ayah]
 
-    render_tts_player(
-        f"{selected_ayah}. বাংলা উচ্চারণ: {ayah_data['bangla']}. অর্থ: {ayah_data['meaning']}",
-        lang="bn",
-        caption="উচ্চারণ ও অর্থ শুনতে পারো",
-    )
+        st.markdown(f'<div class="arabic-text">{ayah_data["arabic"]}</div>', unsafe_allow_html=True)
+        c1, c2 = st.columns(2)
+        with c1:
+            st.markdown(f"**বাংলা উচ্চারণ:** {ayah_data['bangla']}")
+        with c2:
+            st.markdown(f"**অর্থ:** {ayah_data['meaning']}")
 
-    user_recitation = st.text_input("তুমি বাংলা উচ্চারণ লেখো:", placeholder=f"উদাহরণ: {ayah_data['bangla']}", key="quran_input")
-    voice_recitation = get_audio_input("অথবা মাইকে উচ্চারণ বলো:", key="quran_voice")
-    check_button = st.button("যাচাই করো", type="primary", key="quran_check")
+        if st.session_state.auto_tts:
+            render_tts_player(
+                f"{selected_ayah}. বাংলা উচ্চারণ: {ayah_data['bangla']}. অর্থ: {ayah_data['meaning']}",
+                lang="bn",
+                caption="উচ্চারণ ও অর্থ শুনতে পারো",
+            )
 
-    if not check_button:
-        return
+        user_recitation = st.text_input("তুমি বাংলা উচ্চারণ লেখো:", placeholder=f"উদাহরণ: {ayah_data['bangla']}", key="quran_input")
+        voice_recitation = get_audio_input("অথবা মাইকে উচ্চারণ বলো:", key="quran_voice")
+        check_button = st.button("যাচাই করো", type="primary", key="quran_check")
 
-    recitation_text = user_recitation.strip()
-    if not recitation_text and voice_recitation:
-        with st.spinner("তোমার তিলাওয়াত লেখা হচ্ছে..."):
-            recitation_text = transcribe_audio(voice_recitation, "কুরআনের বাংলা উচ্চারণ")
-        if recitation_text:
-            st.success(f"তুমি বলেছো: {recitation_text}")
+        if check_button:
+            recitation_text = user_recitation.strip()
+            if not recitation_text and voice_recitation:
+                with st.spinner("তোমার তিলাওয়াত লেখা হচ্ছে..."):
+                    recitation_text = transcribe_audio(voice_recitation, "কুরআনের বাংলা উচ্চারণ")
+                if recitation_text:
+                    st.success(f"তুমি বলেছো: {recitation_text}")
 
-    if not recitation_text:
-        st.info("প্রথমে বাংলা উচ্চারণ লেখো বা মাইকে রেকর্ড করো।")
-        return
+            if not recitation_text:
+                result_state = {"status": "empty"}
+            else:
+                result = compare_ayah(recitation_text, ayah_data["bangla"])
+                if result["is_correct"]:
+                    result_state = {"status": "correct", "ayah_bangla": ayah_data["bangla"]}
+                else:
+                    user_side = ""
+                    correct_side = ""
+                    for item in result["details"]:
+                        if item["match"]:
+                            user_side += f'<span class="word-correct">{item["user"]}</span> '
+                            correct_side += f'<span class="word-correct">{item["correct"]}</span> '
+                        else:
+                            if item["user"]:
+                                user_side += f'<span class="word-wrong">{item["user"]}</span> '
+                            else:
+                                user_side += '<span class="word-missing">(বাদ পড়েছে)</span> '
+                            correct_side += f'<span class="word-missing">{item["correct"]}</span> '
+                    result_state = {
+                        "status": "wrong",
+                        "mistakes": result["mistakes"],
+                        "user_side": user_side,
+                        "correct_side": correct_side,
+                        "ayah_bangla": ayah_data["bangla"],
+                    }
 
-    result = compare_ayah(recitation_text, ayah_data["bangla"])
-    if result["is_correct"]:
-        st.markdown('<div class="correct-box"><h3>মাশাআল্লাহ! একদম সঠিক।</h3><p>এভাবেই নিয়মিত অনুশীলন করো।</p></div>', unsafe_allow_html=True)
-        render_tts_player("মাশাআল্লাহ। একদম সঠিক হয়েছে।", lang="bn", caption="ফিডব্যাক শুনতে পারো")
-        return
+    with right_col:
+        st.markdown('<div class="info-box"><strong>ফলাফল প্যানেল</strong><br><br>যাচাই করার পর ফলাফল এখানে দেখাবে।</div>', unsafe_allow_html=True)
 
-    st.markdown(f'<div class="wrong-box"><h3>আরেকটু চেষ্টা করো। ({result["mistakes"]}টি শব্দে ভুল)</h3><p>নিচে কোথায় ভুল হয়েছে দেখো।</p></div>', unsafe_allow_html=True)
+        if result_state["status"] == "empty":
+            st.info("প্রথমে বাংলা উচ্চারণ লেখো বা মাইকে রেকর্ড করো।")
+        elif result_state["status"] == "correct":
+            st.markdown('<div class="correct-box"><h3>মাশাআল্লাহ! একদম সঠিক।</h3><p>এভাবেই নিয়মিত অনুশীলন করো।</p></div>', unsafe_allow_html=True)
+            if st.session_state.auto_tts:
+                render_tts_player("মাশাআল্লাহ। একদম সঠিক হয়েছে।", lang="bn", caption="ফিডব্যাক শুনতে পারো")
+        elif result_state["status"] == "wrong":
+            st.markdown(
+                f'<div class="wrong-box"><h3>আরেকটু চেষ্টা করো। ({result_state["mistakes"]}টি শব্দে ভুল)</h3><p>নিচে কোথায় ভুল হয়েছে দেখো।</p></div>',
+                unsafe_allow_html=True,
+            )
+            st.markdown(
+                f"""
+                <div class="info-box" style="margin-top:0.8rem;">
+                    <strong>তোমার উত্তর</strong><br><br>{result_state["user_side"]}
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+            st.markdown(
+                f"""
+                <div class="info-box" style="margin-top:0.8rem;">
+                    <strong>সঠিক উত্তর</strong><br><br>{result_state["correct_side"]}
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+            if st.session_state.auto_tts:
+                render_tts_player(
+                    f"আরেকটু চেষ্টা করো। সঠিক উচ্চারণ হলো: {result_state['ayah_bangla']}",
+                    lang="bn",
+                    caption="সঠিক উচ্চারণ শুনতে পারো",
+                )
 
-    comparison_html = "<div style='margin-top:0.8rem; padding:0.8rem; background:#fafafa; border-radius:12px;'>"
-    comparison_html += "<p><strong>তোমার উত্তর:</strong> "
-    for item in result["details"]:
-        if item["match"]:
-            comparison_html += f'<span class="word-correct">{item["user"]}</span> '
-        elif item["user"]:
-            comparison_html += f'<span class="word-wrong">{item["user"]}</span> '
+
+def render_story_panel():
+    render_panel_header("ইসলামিক গল্প", "বিষয় দাও, markdown ছাড়া পরিষ্কার গল্প নাও")
+    left_col, right_col = st.columns(2)
+    story_state = {"status": "idle", "content": ""}
+
+    with left_col:
+        st.markdown('<div class="info-box">তালিকা থেকে বা নিজের বিষয় দিয়ে গল্প তৈরি করো।</div>', unsafe_allow_html=True)
+
+        story_option = st.radio("গল্পের ধরন:", ["তালিকা থেকে বাছাই", "নিজে বিষয় লেখো"], horizontal=True, key="story_option")
+        if story_option == "তালিকা থেকে বাছাই":
+            story_topic = st.selectbox("গল্পের বিষয়:", options=STORY_TOPICS, key="story_select")
         else:
-            comparison_html += '<span class="word-missing">(বাদ পড়েছে)</span> '
-    comparison_html += "</p><p><strong>সঠিক উত্তর:</strong> "
-    for item in result["details"]:
-        if item["match"]:
-            comparison_html += f'<span class="word-correct">{item["correct"]}</span> '
-        else:
-            comparison_html += f'<span class="word-missing">{item["correct"]}</span> '
-    comparison_html += "</p></div>"
+            story_topic = st.text_input("গল্পের বিষয় লেখো:", placeholder="উদাহরণ: একজন সৎ ছেলের গল্প", key="story_custom")
 
-    st.markdown(comparison_html, unsafe_allow_html=True)
-    st.info(f"আবার চেষ্টা করো। সঠিক উচ্চারণ: **{ayah_data['bangla']}**")
-    render_tts_player(f"আরেকটু চেষ্টা করো। সঠিক উচ্চারণ হলো: {ayah_data['bangla']}", lang="bn", caption="সঠিক উচ্চারণ শুনতে পারো")
+        voice_story_topic = get_audio_input("অথবা মাইকে গল্পের বিষয় বলো:", key="story_voice")
+        story_button = st.button("গল্প তৈরি করো", type="primary", use_container_width=True)
 
+        if story_button:
+            topic_to_use = story_topic.strip() if isinstance(story_topic, str) else ""
+            if not topic_to_use and voice_story_topic:
+                with st.spinner("বিষয়টি লেখা হচ্ছে..."):
+                    topic_to_use = transcribe_audio(voice_story_topic, "বাচ্চাদের গল্পের বিষয়")
+                if topic_to_use:
+                    st.success(f"তুমি বিষয় বলেছো: {topic_to_use}")
 
-def render_story_tab():
-    st.markdown('<div class="section-emoji">গল্প</div>', unsafe_allow_html=True)
-    st.markdown('<div class="section-title">ইসলামিক গল্প</div>', unsafe_allow_html=True)
-    st.markdown('<div class="info-box">তালিকা থেকে বা নিজের দেয়া বিষয়ের উপর গল্প তৈরি করো। আউটপুট থাকবে পরিষ্কার plain text।</div>', unsafe_allow_html=True)
+            if not topic_to_use:
+                story_state = {"status": "empty", "content": ""}
+            else:
+                with st.spinner("গল্প লেখা হচ্ছে..."):
+                    prompt = f"ছোট বাচ্চাদের জন্য একটি ইসলামিক গল্প লেখো। বিষয়: {topic_to_use}"
+                    story = sanitize_story_text(get_ai_response(prompt, STORY_SYSTEM))
+                story_state = {"status": "ready", "content": story}
 
-    story_option = st.radio("গল্পের ধরন:", ["তালিকা থেকে বাছাই", "নিজে বিষয় লেখো"], horizontal=True, key="story_option")
+    with right_col:
+        st.markdown('<div class="info-box"><strong>গল্প আউটপুট প্যানেল</strong><br><br>গল্প তৈরি করার পর এখানে দেখাবে।</div>', unsafe_allow_html=True)
 
-    if story_option == "তালিকা থেকে বাছাই":
-        story_topic = st.selectbox("গল্পের বিষয়:", options=STORY_TOPICS, key="story_select")
-    else:
-        story_topic = st.text_input("গল্পের বিষয় লেখো:", placeholder="উদাহরণ: একজন সৎ ছেলের গল্প", key="story_custom")
-
-    voice_story_topic = get_audio_input("অথবা মাইকে গল্পের বিষয় বলো:", key="story_voice")
-    story_button = st.button("গল্প তৈরি করো", type="primary", use_container_width=True)
-
-    if not story_button:
-        return
-
-    topic_to_use = story_topic.strip() if isinstance(story_topic, str) else ""
-    if not topic_to_use and voice_story_topic:
-        with st.spinner("বিষয়টি লেখা হচ্ছে..."):
-            topic_to_use = transcribe_audio(voice_story_topic, "বাচ্চাদের গল্পের বিষয়")
-        if topic_to_use:
-            st.success(f"তুমি বিষয় বলেছো: {topic_to_use}")
-
-    if not topic_to_use:
-        st.info("প্রথমে গল্পের বিষয় লেখো বা মাইকে রেকর্ড করো।")
-        return
-
-    with st.spinner("গল্প লেখা হচ্ছে..."):
-        prompt = f"ছোট বাচ্চাদের জন্য একটি ইসলামিক গল্প লেখো। বিষয়: {topic_to_use}"
-        story = sanitize_story_text(get_ai_response(prompt, STORY_SYSTEM))
-
-    st.markdown(f'<div class="story-box">{html.escape(story)}</div>', unsafe_allow_html=True)
-    render_tts_player(story, lang="bn", caption="গল্প শুনতে প্লে করো")
+        if story_state["status"] == "empty":
+            st.info("প্রথমে গল্পের বিষয় লেখো বা মাইকে রেকর্ড করো।")
+        elif story_state["status"] == "ready":
+            st.markdown(f'<div class="story-box">{html.escape(story_state["content"])}</div>', unsafe_allow_html=True)
+            if st.session_state.auto_tts:
+                render_tts_player(story_state["content"], lang="bn", caption="গল্প শুনতে প্লে করো")
 
 
 def render_app():
-    render_top_overview()
+    init_session_state()
+    mode = render_sidebar()
 
     if not check_groq_ready():
         st.warning(
@@ -856,13 +759,14 @@ def render_app():
             "`GROQ_MODEL=llama-3.1-8b-instant`"
         )
 
-    t1, t2, t3 = st.tabs(["AI শিক্ষক", "কুরআন অনুশীলন", "ইসলামিক গল্প"])
-    with t1:
-        render_teacher_tab()
-    with t2:
-        render_quran_tab()
-    with t3:
-        render_story_tab()
+    st.markdown('<div class="app-shell">', unsafe_allow_html=True)
+    if mode == "AI শিক্ষক":
+        render_teacher_panel()
+    elif mode == "কুরআন অনুশীলন":
+        render_quran_panel()
+    else:
+        render_story_panel()
+    st.markdown('</div>', unsafe_allow_html=True)
 
 
 render_app()
