@@ -2,6 +2,8 @@
 
 AI Madrasa is a small Streamlit app built for young learners (roughly ages 5-10) who are learning Islam in Bangla. The goal is simple: kids should be able to speak naturally, listen to responses, and learn without dealing with heavy typing.
 
+This version uses **Groq API** for AI text generation.
+
 ## What this app does
 
 The app has three learning modes:
@@ -12,7 +14,7 @@ The app has three learning modes:
 
 ### 1) AI Teacher
 - Students can ask questions in Bangla by typing or speaking.
-- The app sends the question to Gemini with child-friendly Islamic guidance.
+- The app sends the question to Groq with child-friendly Islamic guidance.
 - Answer comes back in simple Bangla.
 - The answer is also playable as audio.
 
@@ -26,6 +28,13 @@ The app has three learning modes:
 - Custom topics can be spoken through microphone input.
 - The app generates a short Islamic story in easy Bangla.
 - Story can be played back as audio.
+
+## Voice quality
+
+- Voice recording is cleaned with noise reduction before transcription.
+- Transcription uses Python `SpeechRecognition` (Google Web Speech backend, no API key required).
+- Speech output uses Python `gTTS`.
+- Voice features are now applied across all learning tabs (Teacher, Quran Practice, Story Teller).
 
 ## Screenshots
 
@@ -42,15 +51,15 @@ The app has three learning modes:
 
 - Python
 - Streamlit
-- Google Gemini API (google-generativeai)
-- gTTS (for Bangla speech playback)
-- python-dotenv
+- Groq API (LLM)
+- STT: `SpeechRecognition`
+- TTS: `gTTS`
+- noisereduce + librosa + soundfile (audio denoising)
 
 ## Project structure
 
 - app.py: Main Streamlit application
 - requirements.txt: Python dependencies
-- .env: Local API key (not committed)
 
 ## Setup
 
@@ -58,7 +67,7 @@ The app has three learning modes:
 
 ```bash
 git clone <your-repo-url>
-cd AI\ Madrasa
+cd AI-for-Madrasa-Students
 ```
 
 ### 2. Create virtual environment
@@ -74,15 +83,19 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 4. Add Gemini API key
+### 4. Configure Groq API key
 
-Create or edit .env file:
+Create `.env` in project root and add:
 
 ```env
-GEMINI_API_KEY=your_real_key_here
+GROQ_API_KEY=your_groq_api_key_here
+GROQ_MODEL=llama-3.1-8b-instant
+GROQ_MAX_TOKENS=1024
+GROQ_CONTINUATION_ROUNDS=2
 ```
 
-You can get a key from Google AI Studio.
+`GROQ_MODEL` is optional; the app uses `llama-3.1-8b-instant` by default.
+`GROQ_MAX_TOKENS` and `GROQ_CONTINUATION_ROUNDS` are optional and help get more complete responses when output is long.
 
 ### 5. Run the app
 
@@ -92,8 +105,8 @@ streamlit run app.py
 
 ## Notes about voice features
 
-- Voice input uses Streamlit audio input and Gemini for transcription.
-- Voice output uses gTTS to generate MP3 playback.
+- Voice input uses Streamlit audio input, then noise reduction and Python `SpeechRecognition` transcription.
+- Voice output uses `gTTS` (MP3).
 - If audio input is unavailable, the app gracefully falls back and still works with typed input.
 
 ## Safety note

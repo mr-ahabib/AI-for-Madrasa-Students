@@ -1,4 +1,8 @@
 streamlit>=1.39.0
-google-generativeai>=0.4.0
-python-dotenv>=1.0.0
-gTTS>=2.5.0
+noisereduce>=3.0.3
+librosa>=0.10.2
+soundfile>=0.12.1
+SpeechRecognition>=3.10.4
+gTTS>=2.5.4
+python-dotenv>=1.0.1
+groq>=0.13.1
